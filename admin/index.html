@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="cs"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin · Martin Jelínek</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="stylesheet" href="../assets/style.css?v=83b61727ba">
+<style>
+:root{--display:Manrope,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;--a:#1f8a8a;--ink:#141a22;--soft:#3a4250;--muted:#6b7583;--line:#e3e7ec;--bg:#eef0f4;--card:#fff;--r:14px}
+*{box-sizing:border-box}h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.02em}body{margin:0;font-family:Manrope,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);font-size:14.5px;line-height:1.5}
+a{color:var(--a)}button,input,select,textarea{font:inherit}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:#fff;color:var(--ink);padding:9px 14px;border-radius:9px;cursor:pointer;font-weight:700;text-decoration:none}
+.btn:hover{border-color:var(--a);color:var(--a)}.btn--p{background:var(--a);border-color:var(--a);color:#fff}.btn--p:hover{filter:brightness(.92);color:#fff}
+.btn--s{padding:6px 10px;font-size:13px}
+input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink)}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--a);outline-offset:1px}
+label{display:grid;gap:5px;font-size:12.5px;font-weight:700;color:var(--soft)}
+.hidden{display:none!important}
+/* přihlášení */
+.login{min-height:100vh;display:grid;place-items:center;padding:20px}
+.login__box{background:#fff;border-radius:20px;padding:34px 32px;width:min(420px,100%);box-shadow:0 30px 70px -40px rgba(20,26,34,.5);display:grid;gap:14px}
+.login__logo{display:flex;align-items:center;gap:12px;margin-bottom:8px}.login__logo img{height:38px;width:auto;max-width:160px;object-fit:contain}
+.login__logo b{display:block}.login__logo span{color:var(--muted);font-size:13px}
+.login h1{font-size:22px;margin:0}.login p{margin:0;color:var(--muted)}
+.tip{background:color-mix(in srgb,var(--a) 10%,#fff);border-left:3px solid var(--a);padding:10px 12px;border-radius:8px;font-size:13px}
+/* aplikace */
+.app{display:grid;grid-template-columns:240px minmax(0,1fr);min-height:100vh}
+.side{background:#fff;border-right:1px solid var(--line);padding:18px 14px;display:flex;flex-direction:column;gap:6px;position:sticky;top:0;height:100vh}
+.side__brand{display:flex;align-items:center;gap:10px;padding:6px 8px 16px;border-bottom:1px solid var(--line);margin-bottom:8px}
+.side__brand img{height:34px;width:auto;max-width:120px;object-fit:contain}.side__brand b{font-size:14px;display:block}.side__brand span{font-size:12px;color:var(--muted)}
+.side a.nav{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:var(--soft);text-decoration:none;font-weight:600}
+.side a.nav svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.side a.nav.on{background:color-mix(in srgb,var(--a) 12%,#fff);color:var(--a)}
+.side__dole{margin-top:auto;display:grid;gap:8px;font-size:12.5px;color:var(--muted)}
+.side__osoba{display:flex;align-items:center;gap:10px;padding:8px}.side__osoba img{width:36px;height:36px;border-radius:50%;object-fit:cover;object-position:top}
+.main{padding:22px clamp(16px,3vw,36px) 60px}
+.hlava{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.hlava h1{font-size:24px;margin:0}.hlava p{margin:4px 0 0;color:var(--muted)}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:22px}
+.kpi div{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px}
+.kpi b{display:block;font-size:21px;font-weight:800;letter-spacing:-.02em;white-space:nowrap}.kpi span{color:var(--muted);font-size:12.5px;text-transform:uppercase;letter-spacing:.06em}
+.karta{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.karta h2{font-size:16px;margin:0 0 12px}
+.dva{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.stitek{display:inline-block;padding:3px 8px;border-radius:999px;font-size:12px;font-weight:700;background:color-mix(in srgb,var(--a) 12%,#fff);color:var(--a)}
+/* kanban */
+.kanban{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(230px,1fr);gap:12px;overflow-x:auto;padding-bottom:10px;align-items:start}
+.sloupec{background:#e6e9ef;border-radius:var(--r);padding:10px;min-height:200px}
+.sloupec.over{outline:2px dashed var(--a)}
+.sloupec__h{display:flex;justify-content:space-between;align-items:center;padding:4px 6px 10px;font-weight:800;font-size:13px}
+.sloupec__h span{background:#fff;border-radius:999px;padding:1px 8px;font-size:12px;color:var(--muted)}
+.kk{background:#fff;border-radius:10px;padding:8px;margin-bottom:8px;cursor:grab;box-shadow:0 8px 20px -14px rgba(0,0,0,.4);display:grid;grid-template-columns:56px 1fr;gap:10px;align-items:center}
+.kk img{width:56px;height:44px;object-fit:cover;border-radius:6px;background:var(--bg)}
+.kk b{display:block;font-size:13px;line-height:1.25}.kk span{font-size:12px;color:var(--muted)}.kk em{font-style:normal;color:var(--a);font-weight:700;font-size:12.5px}
+.kk.dragging{opacity:.4}
+img.is-broken{visibility:hidden}.kk .bez-fotky,.bez-fotky{background:var(--bg) center/28px no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239aa3ad' stroke-width='1.6'%3E%3Cpath d='M3 11l9-8 9 8v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z'/%3E%3C/svg%3E")}
+/* panel detailu */
+.panel{position:fixed;inset:0 0 0 auto;width:min(480px,100%);background:#fff;box-shadow:-20px 0 60px -30px rgba(0,0,0,.4);padding:22px;overflow:auto;z-index:20;display:grid;gap:14px;align-content:start}
+.panel img.foto{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:10px;background:var(--bg)}
+.panel h2{margin:0;font-size:18px}.panel .zavrit{position:absolute;right:14px;top:12px;border:0;background:var(--bg);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:18px}
+.pozn{display:grid;gap:8px}.pozn div{background:var(--bg);border-radius:8px;padding:8px 10px;font-size:13px}.pozn small{color:var(--muted);display:block}
+.zatemneni{position:fixed;inset:0;background:rgba(20,26,34,.35);z-index:19}
+/* odhad */
+.odhad{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.vysledek{background:linear-gradient(160deg,color-mix(in srgb,var(--a) 14%,#fff),#fff);border:1px solid color-mix(in srgb,var(--a) 30%,#fff)}
+.vysledek b.cena{display:block;font-size:30px;font-weight:800;letter-spacing:-.02em}
+.rozpeti{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-top:6px}
+.pruh{height:8px;border-radius:999px;background:linear-gradient(90deg,#d9e6ea,var(--a),#d9e6ea);margin-top:10px;position:relative}
+.pruh i{position:absolute;top:-4px;width:16px;height:16px;border-radius:50%;background:#fff;border:3px solid var(--a);transform:translateX(-50%)}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:999px;font-size:13px;z-index:30;opacity:0;transition:opacity .3s}
+.toast.on{opacity:1}
+.ukol{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)}.ukol input[type=checkbox]{width:18px;height:18px;margin-top:2px}
+.ukol.hotovo b{text-decoration:line-through;color:var(--muted)}.ukol small{color:var(--muted);display:block}
+.ukol.pozde small{color:#c0392b;font-weight:700}
+.burger{display:none}
+@media(max-width:820px){.app{grid-template-columns:1fr}.side{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center}
+  .side__brand{border:0;padding:6px 8px;margin:0;flex:1 1 100%}.side a.nav{padding:8px 10px;font-size:13px}.side__dole{display:none}.kanban{grid-auto-columns:minmax(220px,260px)}}
+
+.stavul{font-size:12px;color:var(--muted)}.stavul.chyba{color:#c0392b;font-weight:700}
+.odznak{margin-left:auto;background:#c0392b;color:#fff;border-radius:999px;font-size:11px;font-weight:800;padding:1px 7px}
+.side a.nav.on .odznak{background:var(--a)}
+.popt{border-bottom:1px solid var(--line);padding:14px 0;display:grid;gap:6px}.popt:last-child{border:0}.popt p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.popt.hot{opacity:.6}.radek{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.filtr{max-width:320px;margin-bottom:12px}.prazdno{margin:0;color:var(--muted)}
+td{overflow-wrap:anywhere}.texty label{margin-bottom:12px}.lepi{position:sticky;bottom:0;padding:12px 0;background:var(--bg)}
+.zpet{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.tlacitka-mobil{display:none}
+.nv-obd{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}.nv-graf{display:flex;align-items:flex-end;gap:2px;height:150px;padding-top:8px}
+.nv-graf div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;min-width:0}
+.nv-graf i{display:block;width:100%;max-width:28px;background:var(--a);border-radius:3px 3px 0 0;min-height:2px}.nv-graf i.nula{background:var(--line)}
+.nv-osa{display:flex;gap:2px;font-size:11px;color:var(--muted)}.nv-osa span{flex:1;text-align:center;min-width:0;overflow:visible;white-space:nowrap}
+.nv-pruh{height:6px;border-radius:3px;background:color-mix(in srgb,var(--a) 14%,#fff);margin-top:5px}.nv-pruh i{display:block;height:100%;border-radius:3px;background:var(--a)}
+.nv-tab td:not(:first-child),.nv-tab th:not(:first-child){text-align:right;white-space:nowrap;width:1%}.nv-tab img{width:52px;height:40px;object-fit:cover;border-radius:6px;float:left;margin-right:10px}
+.nv-mini{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:6px 0 12px}.nv-mini b{display:block;font-size:20px;font-weight:800}.nv-mini span{font-size:12px;color:var(--muted)}
+.nv-test{background:#fff4d6;border:1px solid #f0c75e;border-radius:9px;padding:8px 12px;margin-bottom:12px;font-size:13px}
+.nv-pozn{font-size:12.5px;color:var(--muted);margin:14px 0 0}
+@media(max-width:600px){#nv-obsah .kpi{grid-template-columns:1fr 1fr}#nv-obsah .kpi b{font-size:19px}}
+@media(max-width:820px){.tlacitka-mobil{display:flex;gap:8px;flex:1 1 100%;padding:4px 8px}.side{padding:10px}.odznak{margin-left:4px}.side a.nav svg{display:none}
+ .tab-karty thead{display:none}.tab-karty tr{display:block;border-bottom:1px solid var(--line);padding:10px 0}.tab-karty td{display:block;border:0;padding:4px 0}}
+</style>
+<link rel="icon" href="../favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png"><link rel="apple-touch-icon" href="../apple-touch-icon.png">
+</head><body>
+<script id="mk-data" type="application/json">{"slug": "martin-jelinek", "jmeno": "Martin Jelínek", "role": "Realitní makléř", "email": "martin.jelinek@re-max.cz", "telefon": "+420722521535", "wa": "https://wa.me/420722521535?text=Dobr%C3%BD%20den%2C%20p%C3%AD%C5%A1i%20V%C3%A1m%20z%20Va%C5%A1eho%20webu.%20M%C3%A1m%20dotaz%20ohledn%C4%9B%20nemovitosti.", "kancelar": "REMAX 4 You", "logo": "../assets/logo.svg", "foto": "../assets/foto.webp", "accent": "#1a1d3a", "nemovitosti": [{"id": "448803", "slug": "prodej-bytu-3-1-v-osobnim-vlastnictvi-64-m2-podbor-448803", "titul": "Prodej bytu 3+1 v osobním vlastnictví 64 m², Podbořany", "typ": "byt", "tr": "prodej", "cena": 2250000, "plocha": 64.0, "dispozice": "3+1", "obec": "Podbořany", "okres": "Louny", "kraj": "Ústecký kraj", "foto": "../assets/n/448803/00_m.jpg", "foto_velka": "../assets/n/448803/00.jpg", "portal": "https://www.remax-czech.cz/reality/detail/448803/prodej-bytu-3-1-v-osobnim-vlastnictvi-64-m2-podborany", "vlozeno": "2026-11-28", "faze": "V inzerci"}, {"id": "448034", "slug": "prodej-bytu-3-1-v-druzstevnim-vlastnictvi-81-m2-kl-448034", "titul": "Prodej bytu 3+1 v družstevním vlastnictví 81 m², Klášterec nad Ohří", "typ": "byt", "tr": "prodej", "cena": 2990000, "plocha": 81.0, "dispozice": "3+1", "obec": "Klášterec nad Ohří", "okres": "Chomutov", "kraj": "Ústecký kraj", "foto": "../assets/n/448034/00_m.jpg", "foto_velka": "../assets/n/448034/00.jpg", "portal": "https://www.remax-czech.cz/reality/detail/448034/prodej-bytu-3-1-v-druzstevnim-vlastnictvi-81-m2-klasterec-nad-ohri", "vlozeno": "2026-11-28", "faze": "V inzerci"}, {"id": "448017", "slug": "prodej-domu-136-m2-kryry-448017", "titul": "Prodej domu 136 m², Kryry", "typ": "dům", "tr": "prodej", "cena": 5600000, "plocha": 136.0, "dispozice": null, "obec": "Kryry", "okres": "Louny", "kraj": "Ústecký kraj", "foto": "../assets/n/448017/00_m.jpg", "foto_velka": "../assets/n/448017/00.jpg", "portal": "https://www.remax-czech.cz/reality/detail/448017/prodej-domu-136-m2-kryry", "vlozeno": "2026-11-28", "faze": "V inzerci"}, {"id": "446142", "slug": "prodej-pozemku-7734-m2-holedec-446142", "titul": "Prodej pozemku 7734 m², Holedeč", "typ": "pozemek", "tr": "prodej", "cena": 500000, "plocha": 7734.0, "dispozice": null, "obec": "Holedeč", "okres": "Louny", "kraj": "Ústecký kraj", "foto": "../assets/n/446142/00_m.jpg", "foto_velka": "../assets/n/446142/00.jpg", "portal": "https://www.remax-czech.cz/reality/detail/446142/prodej-pozemku-7734-m2-holedec", "vlozeno": "2026-11-28", "faze": "V inzerci"}, {"id": "446143", "slug": "prodej-pozemku-12056-m2-holedec-446143", "titul": "Prodej pozemku 12056 m², Holedeč", "typ": "pozemek", "tr": "prodej", "cena": 2200000, "plocha": 12056.0, "dispozice": null, "obec": "Holedeč", "okres": "Louny", "kraj": "Ústecký kraj", "foto": "../assets/n/446143/00_m.jpg", "foto_velka": "../assets/n/446143/00.jpg", "portal": "https://www.remax-czech.cz/reality/detail/446143/prodej-pozemku-12056-m2-holedec", "vlozeno": "2026-11-28", "faze": "V inzerci"}, {"id": "445120", "slug": "prodej-pozemku-1181-m2-vroutek-445120", "titul": "Prodej pozemku 1181 m², Vroutek", "typ": "pozemek", "tr": "prodej", "cena": 900000, "plocha": 1181.0, "dispozice": null, "obec": "Vroutek", "okres": "Louny", "kraj": "Ústecký kraj", "foto": "../assets/n/445120/00_m.jpg", "foto_velka": "../assets/n/445120/00.jpg", "portal": "https://www.remax-czech.cz/reality/detail/445120/prodej-pozemku-1181-m2-vroutek", "vlozeno": "2026-11-28", "faze": "V inzerci"}, {"id": "445121", "slug": "prodej-pozemku-1268-m2-vroutek-445121", "titul": "Prodej pozemku 1268 m², Vroutek", "typ": "pozemek", "tr": "prodej", "cena": 1300000, "plocha": 1268.0, "dispozice": null, "obec": "Vroutek", "okres": "Louny", "kraj": "Ústecký kraj", "foto": "../assets/n/445121/00_m.jpg", "foto_velka": "../assets/n/445121/00.jpg", "portal": "https://www.remax-czech.cz/reality/detail/445121/prodej-pozemku-1268-m2-vroutek", "vlozeno": "2026-11-28", "faze": "V inzerci"}, {"id": "439053", "slug": "prodej-pozemku-889-m2-holedec-439053", "titul": "Prodej pozemku 889 m², Holedeč", "typ": "pozemek", "tr": "prodej", "cena": 1100000, "plocha": 889.0, "dispozice": null, "obec": "Holedeč", "okres": "Louny", "kraj": "Ústecký kraj", "foto": "../assets/n/439053/00_m.jpg", "foto_velka": "../assets/n/439053/00.jpg", "portal": "https://www.remax-czech.cz/reality/detail/439053/prodej-pozemku-889-m2-holedec", "vlozeno": "2026-11-28", "faze": "V inzerci"}, {"id": "438685", "slug": "prodej-pozemku-820-m2-holedec-438685", "titul": "Prodej pozemku 820 m², Holedeč", "typ": "pozemek", "tr": "prodej", "cena": 1900000, "plocha": 820.0, "dispozice": null, "obec": "Holedeč", "okres": "Louny", "kraj": "Ústecký kraj", "foto": "../assets/n/438685/00_m.jpg", "foto_velka": "../assets/n/438685/00.jpg", "portal": "https://www.remax-czech.cz/reality/detail/438685/prodej-pozemku-820-m2-holedec", "vlozeno": "2026-11-28", "faze": "V inzerci"}, {"id": "437697", "slug": "prodej-pozemku-741-m2-zatec-437697", "titul": "Prodej pozemku 741 m², Žatec", "typ": "pozemek", "tr": "prodej", "cena": 2300000, "plocha": 741.0, "dispozice": null, "obec": "Žatec", "okres": "Louny", "kraj": "Ústecký kraj", "foto": "../assets/n/437697/00_m.jpg", "foto_velka": "../assets/n/437697/00.jpg", "portal": "https://www.remax-czech.cz/reality/detail/437697/prodej-pozemku-741-m2-zatec", "vlozeno": "2026-11-28", "faze": "V inzerci"}, {"id": "433536", "slug": "prodej-domu-78-m2-mecholupy-433536", "titul": "Prodej domu 78 m², Měcholupy", "typ": "dům", "tr": "prodej", "cena": 4550000, "plocha": 78.0, "dispozice": null, "obec": "Měcholupy", "okres": "Louny", "kraj": "Ústecký kraj", "foto": "../assets/n/433536/00_m.jpg", "foto_velka": "../assets/n/433536/00.jpg", "portal": "https://www.remax-czech.cz/reality/detail/433536/prodej-domu-78-m2-mecholupy", "vlozeno": "2026-11-28", "faze": "V inzerci"}, {"id": "448801", "slug": "prodej-bytu-2-1-v-osobnim-vlastnictvi-49-m2-podbor-448801", "titul": "Prodej bytu 2+1 v osobním vlastnictví 49 m², Podbořany", "typ": "byt", "tr": "prodej", "cena": 2500000, "plocha": 49.0, "dispozice": "2+1", "obec": "Podbořany", "okres": "Louny", "kraj": "Ústecký kraj", "foto": "../assets/n/448801/00_m.jpg", "foto_velka": "../assets/n/448801/00.jpg", "portal": "https://www.remax-czech.cz/reality/detail/448801/prodej-bytu-2-1-v-osobnim-vlastnictvi-49-m2-podborany", "vlozeno": "2026-11-28", "faze": "Rezervace"}, {"id": "444486", "slug": "prodej-bytu-3-1-v-osobnim-vlastnictvi-68-m2-most-444486", "titul": "Prodej bytu 3+1 v osobním vlastnictví 68 m², Most", "typ": "byt", "tr": "prodej", "cena": 2900000, "plocha": 68.0, "dispozice": "3+1", "obec": "Most", "okres": "Most", "kraj": "Ústecký kraj", "foto": "../assets/n/444486/00_m.jpg", "foto_velka": "../assets/n/444486/00.jpg", "portal": "https://www.remax-czech.cz/reality/detail/444486/prodej-bytu-3-1-v-osobnim-vlastnictvi-68-m2-most", "vlozeno": "2026-11-28", "faze": "Rezervace"}, {"id": "439224", "slug": "prodej-pozemku-612-m2-zatec-439224", "titul": "Prodej pozemku 612 m², Žatec", "typ": "pozemek", "tr": "prodej", "cena": 2400000, "plocha": 612.0, "dispozice": null, "obec": "Žatec", "okres": "Louny", "kraj": "Ústecký kraj", "foto": "../assets/n/439224/00_m.jpg", "foto_velka": "../assets/n/439224/00.jpg", "portal": "https://www.remax-czech.cz/reality/detail/439224/prodej-pozemku-612-m2-zatec", "vlozeno": "2026-11-28", "faze": "Rezervace"}, {"id": "436055", "slug": "prodej-domu-152-m2-zatec-436055", "titul": "Prodej domu 152 m², Žatec", "typ": "dům", "tr": "prodej", "cena": 6750000, "plocha": 152.0, "dispozice": null, "obec": "Žatec", "okres": "Louny", "kraj": "Ústecký kraj", "foto": "../assets/n/436055/00_m.jpg", "foto_velka": "../assets/n/436055/00.jpg", "portal": "https://www.remax-czech.cz/reality/detail/436055/prodej-domu-152-m2-zatec", "vlozeno": "2026-11-28", "faze": "Rezervace"}, {"id": "448804", "slug": "prodej-bytu-2-1-v-osobnim-vlastnictvi-57-m2-podbor-448804", "titul": "Prodej bytu 2+1 v osobním vlastnictví 57 m², Podbořany", "typ": "byt", "tr": "prodej", "cena": null, "plocha": 57.0, "dispozice": "2+1", "obec": "Podbořany", "okres": "Louny", "kraj": "Ústecký kraj", "foto": "../assets/n/448804/00_m.jpg", "foto_velka": "../assets/n/448804/00.jpg", "portal": "https://www.remax-czech.cz/reality/detail/448804/prodej-bytu-2-1-v-osobnim-vlastnictvi-57-m2-podborany", "vlozeno": "2026-11-28", "faze": "Prodáno"}, {"id": "448802", "slug": "prodej-bytu-2-1-v-osobnim-vlastnictvi-50-m2-podbor-448802", "titul": "Prodej bytu 2+1 v osobním vlastnictví 50 m², Podbořany", "typ": "byt", "tr": "prodej", "cena": null, "plocha": 50.0, "dispozice": "2+1", "obec": "Podbořany", "okres": "Louny", "kraj": "Ústecký kraj", "foto": "../assets/n/448802/00_m.jpg", "foto_velka": "../assets/n/448802/00.jpg", "portal": "https://www.remax-czech.cz/reality/detail/448802/prodej-bytu-2-1-v-osobnim-vlastnictvi-50-m2-podborany", "vlozeno": "2026-11-28", "faze": "Prodáno"}, {"id": "439471", "slug": "prodej-bytu-atypicky-v-osobnim-vlastnictvi-14-m2-k-439471", "titul": "Prodej bytu atypický v osobním vlastnictví 14 m², Karlovy Vary", "typ": "byt", "tr": "prodej", "cena": null, "plocha": 14.0, "dispozice": null, "obec": "Karlovy Vary", "okres": "Karlovy Vary", "kraj": "Karlovarský kraj", "foto": "../assets/n/439471/00_m.jpg", "foto_velka": "../assets/n/439471/00.jpg", "portal": "https://www.remax-czech.cz/reality/detail/439471/prodej-bytu-atypicky-v-osobnim-vlastnictvi-14-m2-karlovy-vary", "vlozeno": "2026-11-28", "faze": "Prodáno"}, {"id": "439042", "slug": "prodej-domu-142-m2-lipno-439042", "titul": "Prodej domu 142 m², Lipno", "typ": "dům", "tr": "prodej", "cena": null, "plocha": 142.0, "dispozice": null, "obec": "Lipno", "okres": "Louny", "kraj": "Ústecký kraj", "foto": "../assets/n/439042/00_m.jpg", "foto_velka": "../assets/n/439042/00.jpg", "portal": "https://www.remax-czech.cz/reality/detail/439042/prodej-domu-142-m2-lipno", "vlozeno": "2026-11-28", "faze": "Prodáno"}, {"id": "437051", "slug": "prodej-pozemku-607-m2-zatec-437051", "titul": "Prodej pozemku 607 m², Žatec", "typ": "pozemek", "tr": "prodej", "cena": null, "plocha": 607.0, "dispozice": null, "obec": "Žatec", "okres": "Louny", "kraj": "Ústecký kraj", "foto": "../assets/n/437051/00_m.jpg", "foto_velka": "../assets/n/437051/00.jpg", "portal": "https://www.remax-czech.cz/reality/detail/437051/prodej-pozemku-607-m2-zatec", "vlozeno": "2026-11-28", "faze": "Prodáno"}, {"id": "430829", "slug": "prodej-domu-120-m2-zatec-430829", "titul": "Prodej domu 120 m², Žatec", "typ": "dům", "tr": "prodej", "cena": null, "plocha": 120.0, "dispozice": null, "obec": "Žatec", "okres": "Louny", "kraj": "Ústecký kraj", "foto": "../assets/n/430829/00_m.jpg", "foto_velka": "../assets/n/430829/00.jpg", "portal": "https://www.remax-czech.cz/reality/detail/430829/prodej-domu-120-m2-zatec", "vlozeno": "2026-11-28", "faze": "Prodáno"}], "api": "https://webhunter-makler-crm-api.prodej-bytu-3-1-70-m2-172175436.workers.dev", "texty": [{"nazev": "O mně", "url": "../o-mne/", "pole": [{"k": "o-mne:b97fde23bc", "typ": "Štítek", "text": "Realitní makléř"}, {"k": "o-mne:0a6b148ed9", "typ": "Hlavní nadpis", "text": "Martin Jelínek"}, {"k": "o-mne:45a5876a78", "typ": "Odstavec", "text": "Mé jméno je Martin Jelínek a do realit přicházím v roce 2025, kdy jsem v říjnu složil státní zkoušky a do světa realit jsem ten samý měsíc vstoupil ihned s první prodanou nemovitostí."}, {"k": "o-mne:b0b9daf27d", "typ": "Odstavec", "text": "„Udělat věc, které se bojíme, je první krok k úspěchu.“"}, {"k": "o-mne:95debed83e", "typ": "Odstavec", "text": "V realitách působím od roku 2025 a během prvního roku se mi podařilo prodat a zarezervovat 20 nemovitostí v celkové hodnotě 44 124 000 Kč."}, {"k": "o-mne:7edb7b5181", "typ": "Odstavec", "text": "Jmenuji se Martin Jelínek a do světa realit jsem vstoupil s jasným cílem – pomáhat lidem a budovat důvěru."}, {"k": "o-mne:e7ce23970f", "typ": "Odstavec", "text": "Zkušenosti z působení u Policie ČR mě naučily jednat s lidmi, zvládat náročné situace a hledat efektivní řešení. Tyto dovednosti dnes využívám při každém realitním obchodu."}, {"k": "o-mne:2ed362ae58", "typ": "Odstavec", "text": "Řídím se vlastním pravidlem 4P: Pomáhat, Poradit, Prodat, Pronajmout."}, {"k": "o-mne:7ae2f08caa", "typ": "Odstavec", "text": "Zakládám si na osobním přístupu, férovém jednání a maximálním nasazení. Zajišťuji kompletní realitní služby včetně právního servisu a odhadů nemovitostí pro dědická řízení."}, {"k": "o-mne:d73ae40566", "typ": "Odstavec", "text": "Nemovitosti nejsou jen o prodeji. Jsou především o lidech a důvěře."}, {"k": "o-mne:12404b5dce", "typ": "Odstavec", "text": "Proto věřím, že Vaši důvěru nezklamu a můžete se tak na mě obrátit ohledně rady, pomoci, prodeje či pronájmu ať už Vaší stávající nemovitosti, či Vaší nové budoucí nemovitosti."}, {"k": "o-mne:b36b805ff2", "typ": "Údaj", "text": "Ústecký kraj, Karlovarský kraj, Plzeňský kraj, Liberecký kraj, Středočeský kraj a Praha. Na prodeji nemovitosti se můžeme domluvit kdekoli v České republice."}, {"k": "o-mne:f874dd52a7", "typ": "Údaj", "text": "Byty, Rodinné domy, Komerční prostory, Pozemky"}, {"k": "o-mne:fbc219bc0a", "typ": "Údaj", "text": "REMAX 4 You"}, {"k": "o-mne:7816f70dd5", "typ": "Nadpis", "text": "Časté dotazy"}, {"k": "o-mne:ce0ab261b1", "typ": "Odstavec", "text": "Na co se ptáte nejčastěji, než se potkáme."}, {"k": "o-mne:6fa37c67b9", "typ": "Otázka", "text": "Kolik stojí odhad ceny nemovitosti?"}, {"k": "o-mne:a1c2b51fb2", "typ": "Odstavec", "text": "Odhad nemovitosti se liší podle účelu: jinak se zpracovává odhad pro dědické řízení a jinak odhad tržní ceny nemovitosti pro prodej. Cena je proto individuální, řeknu Vám ji předem podle konkrétní nemovitosti."}, {"k": "o-mne:2f4a39398d", "typ": "Otázka", "text": "Jak probíhá prodej nemovitosti?"}, {"k": "o-mne:ae4d71d3a2", "typ": "Odstavec", "text": "Nejdřív prohlídka a odhad ceny, pak příprava prezentace (fotografie, popis, inzerce), prohlídky se zájemci, rezervační smlouva, kupní smlouva s advokátní úschovou a předání nemovitosti a přepis energií. Geometrické plány a pasporty nemovitostí jsem schopen také zajistit a zlegalizovat tak vše potřebné v rámci prodeje Vaší nemovitosti. O každém kroku víte předem."}]}, {"nazev": "Služby", "url": "../sluzby/", "pole": [{"k": "sluzby:39024984f1", "typ": "Štítek", "text": "Služby"}, {"k": "sluzby:56d913bd65", "typ": "Hlavní nadpis", "text": "S čím Vám pomohu"}, {"k": "sluzby:512451fc59", "typ": "Odstavec", "text": "Prodej, pronájem, odhad ceny a všechno kolem, na jednom místě."}, {"k": "sluzby:388b800464", "typ": "Název služby", "text": "Prodej nemovitosti"}, {"k": "sluzby:a543f966a5", "typ": "Odstavec", "text": "Odhad ceny, profesionální prezentace, prohlídky, smlouvy a předání."}, {"k": "sluzby:60f354117a", "typ": "Název služby", "text": "Pronájem"}, {"k": "sluzby:67d93baf0b", "typ": "Odstavec", "text": "Prověření zájemců, nájemní smlouva a předávací protokol bez starostí."}, {"k": "sluzby:8a21724548", "typ": "Název služby", "text": "Odhad tržní ceny nemovitosti"}, {"k": "sluzby:ac97ce9d52", "typ": "Odstavec", "text": "Podle skutečných prodejů v lokalitě, pro prodej i pro dědické řízení."}, {"k": "sluzby:4c626a023c", "typ": "Název služby", "text": "Financování a právní servis"}, {"k": "sluzby:55a822d82e", "typ": "Odstavec", "text": "Hypotéka, advokátní úschova a katastr na jednom místě."}, {"k": "sluzby:9c1712c677", "typ": "Nadpis", "text": "Jak probíhá prodej"}, {"k": "sluzby:38ca3a4b7a", "typ": "Název služby", "text": "Nezávazná schůzka a odhad ceny"}, {"k": "sluzby:ce02bfc390", "typ": "Odstavec", "text": "Sejdeme se na místě, projdeme nemovitost i Vaše plány a dostanete odhad tržní ceny nemovitosti."}, {"k": "sluzby:51892c40e9", "typ": "Název služby", "text": "Příprava prezentace"}, {"k": "sluzby:88bdf3b5be", "typ": "Odstavec", "text": "Profesionální fotografie, půdorys, popis a inzerce na všech velkých portálech."}, {"k": "sluzby:9d451fb28e", "typ": "Název služby", "text": "Prohlídky a vyjednávání"}, {"k": "sluzby:fbc22dd4cf", "typ": "Odstavec", "text": "Zájemce prověřím, prohlídky vedu osobně a o každé Vám dám zprávu."}, {"k": "sluzby:acc9d0a66d", "typ": "Název služby", "text": "Smlouvy a předání"}, {"k": "sluzby:39c5e43e91", "typ": "Odstavec", "text": "Rezervační a kupní smlouva, advokátní úschova, katastr a předávací protokol."}, {"k": "sluzby:adb0ade1c8", "typ": "Nadpis", "text": "Uvažujete o prodeji nebo koupi? Ozvěte se, ještě dnes se Vám ozvu zpět."}]}, {"nazev": "Kontakt", "url": "../kontakt/", "pole": [{"k": "kontakt:a92b9bcb16", "typ": "Štítek", "text": "Kontakt"}, {"k": "kontakt:eaa5692e2c", "typ": "Hlavní nadpis", "text": "Ozvěte se, kdykoli Vám to vyhovuje"}, {"k": "kontakt:e5b2258e4e", "typ": "Odstavec", "text": "Odpovídám i večer a o víkendu."}]}], "navstevnost": {"stranky": {"/": "Úvod", "/kontakt/": "Kontakt", "/nabidka/": "Nabídka", "/o-mne/": "O mně", "/prodej-bytu-2-1-v-osobnim-vlastnictvi-49-m2-podbor-448801/": "Prodej bytu 2+1 v osobním vlastnictví 49 m², Podbořany", "/prodej-bytu-2-1-v-osobnim-vlastnictvi-50-m2-podbor-448802/": "Prodej bytu 2+1 v osobním vlastnictví 50 m², Podbořany", "/prodej-bytu-2-1-v-osobnim-vlastnictvi-57-m2-podbor-448804/": "Prodej bytu 2+1 v osobním vlastnictví 57 m², Podbořany", "/prodej-bytu-3-1-v-druzstevnim-vlastnictvi-81-m2-kl-448034/": "Prodej bytu 3+1 v družstevním vlastnictví 81 m², Klášterec nad Ohří", "/prodej-bytu-3-1-v-osobnim-vlastnictvi-64-m2-podbor-448803/": "Prodej bytu 3+1 v osobním vlastnictví 64 m², Podbořany", "/prodej-bytu-3-1-v-osobnim-vlastnictvi-68-m2-most-444486/": "Prodej bytu 3+1 v osobním vlastnictví 68 m², Most", "/prodej-bytu-atypicky-v-osobnim-vlastnictvi-14-m2-k-439471/": "Prodej bytu atypický v osobním vlastnictví 14 m², Karlovy Vary", "/prodej-domu-120-m2-zatec-430829/": "Prodej domu 120 m², Žatec", "/prodej-domu-136-m2-kryry-448017/": "Prodej domu 136 m², Kryry", "/prodej-domu-142-m2-lipno-439042/": "Prodej domu 142 m², Lipno", "/prodej-domu-152-m2-zatec-436055/": "Prodej domu 152 m², Žatec", "/prodej-domu-78-m2-mecholupy-433536/": "Prodej domu 78 m², Měcholupy", "/prodej-pozemku-1181-m2-vroutek-445120/": "Prodej pozemku 1181 m², Vroutek", "/prodej-pozemku-12056-m2-holedec-446143/": "Prodej pozemku 12056 m², Holedeč", "/prodej-pozemku-1268-m2-vroutek-445121/": "Prodej pozemku 1268 m², Vroutek", "/prodej-pozemku-607-m2-zatec-437051/": "Prodej pozemku 607 m², Žatec", "/prodej-pozemku-612-m2-zatec-439224/": "Prodej pozemku 612 m², Žatec", "/prodej-pozemku-741-m2-zatec-437697/": "Prodej pozemku 741 m², Žatec", "/prodej-pozemku-7734-m2-holedec-446142/": "Prodej pozemku 7734 m², Holedeč", "/prodej-pozemku-820-m2-holedec-438685/": "Prodej pozemku 820 m², Holedeč", "/prodej-pozemku-889-m2-holedec-439053/": "Prodej pozemku 889 m², Holedeč", "/sluzby/": "Služby"}}}</script>
+
+<div id="login" class="login"><div class="login__box">
+  <div class="login__logo"><img src="../assets/logo.svg" alt="REMAX 4 You"><div><b>Martin Jelínek</b><span>Realitní makléř · REMAX 4 You</span></div></div>
+  <h1>Přihlášení do administrace</h1>
+  <p>Pipeline nemovitostí, zájemci, úkoly, odhad ceny a e-maily na jednom místě.</p>
+  <form>
+    <label>E-mail<input type="email" value="martin.jelinek@re-max.cz" autocomplete="username"></label>
+    <label style="margin-top:10px">Heslo<input type="password" id="heslo" autocomplete="current-password" required></label>
+    <p id="login-chyba" class="hidden" role="alert" style="color:#c0392b;font-size:13px">Nesprávné heslo.</p>
+    <label style="display:flex;align-items:center;gap:8px;margin-top:12px"><input type="checkbox" id="zapamatovat" style="width:18px;height:18px">Zůstat přihlášen na tomto zařízení</label><button class="btn btn--p" type="submit" style="margin-top:14px;width:100%;justify-content:center">Přihlásit se</button>
+  </form>
+  
+  <p style="font-size:13px"><a href="../">Zpět na web</a></p>
+</div></div>
+
+<div id="app" class="app hidden">
+<aside class="side">
+  <div class="side__brand"><img src="../assets/logo.svg" alt="REMAX 4 You"><div><b>Martin Jelínek</b><span>Realitní makléř</span></div></div>
+  <a class="nav" href="#prehled"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg>Přehled</a><a class="nav jen-nav hidden" href="#navstevnost"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h18M6 16v-5M11 16V7M16 16v-8M21 16v-3"/></svg>Návštěvnost</a><a class="nav" href="#poptavky"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H8l-4 4z"/></svg>Poptávky</a><a class="nav" href="#pipeline"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="5" height="16" rx="1"/><rect x="10" y="4" width="5" height="10" rx="1"/><rect x="17" y="4" width="5" height="13" rx="1"/></svg>Pipeline</a><a class="nav" href="#zajemci"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-7 7-7s7 3 7 7"/><path d="M17 4a4 4 0 0 1 0 8M22 21c0-3-1.5-5.5-4-6.5"/></svg>Zájemci</a><a class="nav" href="#ukoly"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><path d="m3 6 1.5 1.5L7 5M3 12l1.5 1.5L7 11M3 18l1.5 1.5L7 17"/></svg>Úkoly</a><a class="nav" href="#odhad"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16M6 15l4-5 4 3 4-6"/></svg>Odhad ceny</a><a class="nav" href="#emaily"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>E-maily</a><a class="nav" href="#texty"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14M12 5v14M9 19h6"/></svg>Texty webu</a><a class="nav" href="#nastaveni"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Nastavení</a>
+  <div class="side__dole"><div class="side__osoba"><img src="../assets/foto.webp" alt=""><div><b>Martin Jelínek</b><br>martin.jelinek@re-max.cz</div></div>
+    <a class="btn btn--s" href="../" target="_blank">Zobrazit web</a><button class="btn btn--s odhlasit">Odhlásit</button><span class="stavul" role="status"></span></div><div class="tlacitka-mobil"><a class="btn btn--s" href="../" target="_blank">Web</a><button class="btn btn--s odhlasit">Odhlásit</button><span class="stavul"></span></div>
+</aside>
+<main class="main">
+  <section class="sekce" id="s-prehled">
+    <div class="hlava"><div><h1>Přehled</h1><p>Co se děje ve Vaší nabídce.</p></div></div>
+    <div class="kpi" id="kpi"></div><div class="karta jen-nav hidden" id="prehled-nav" style="margin-bottom:16px"></div>
+    <div class="dva"><div class="karta"><h2>Pipeline podle fází</h2><table id="prehled-faze"></table></div>
+      <div class="karta"><h2>Úkoly na tento týden</h2><div id="prehled-ukoly"></div></div></div>
+  </section>
+  <section class="sekce hidden" id="s-poptavky">
+    <div class="hlava"><div><h1>Poptávky z webu</h1><p>Zprávy z kontaktního formuláře na Vašem webu.</p></div></div>
+    <div class="karta" id="popt-list"></div>
+  </section>
+  <section class="sekce hidden" id="s-navstevnost">
+    <div class="hlava"><div><h1>Návštěvnost webu</h1><p>Kolik lidí web navštívilo, odkud přišli a co si prohlíželi.</p></div></div>
+    <div class="nv-obd" id="nv-obdobi"></div><div id="nv-obsah"></div>
+    <label style="display:flex;align-items:center;gap:8px;margin-top:14px;font-size:13px"><input type="checkbox" id="nv-ja" style="width:18px;height:18px">Nepočítat moje návštěvy z tohoto zařízení</label>
+  </section>
+  <section class="sekce hidden" id="s-pipeline">
+    <div class="hlava"><div><h1>Pipeline nemovitostí</h1><p>Přetáhněte kartu do jiné fáze, kliknutím otevřete detail. Rezervace a prodeje z RE/MAX se přesunou samy.</p></div></div><details class="karta" id="v-box" style="margin-bottom:16px"><summary style="cursor:pointer;font-weight:700">+ Přidat zakázku, která ještě není na RE/MAX</summary><form id="v-form" class="odhad" style="margin-top:14px"><label>Název<input name="titul" required placeholder="Byt 2+1, Žatec"></label><label>Obec<input name="obec"></label><label>Typ<select name="typ"><option value="byt">byt</option><option value="dům">dům</option><option value="pozemek">pozemek</option><option value="chata">chata</option><option value="komerční">komerční</option></select></label><label>Nabídka<select name="tr"><option value="prodej">prodej</option><option value="pronájem">pronájem</option></select></label><label>Cena (Kč)<input name="cena" type="number" min="0"></label><label>Plocha (m²)<input name="plocha" type="number" min="0"></label><label>Majitel a kontakt<input name="majitel"></label><label>Fáze<select name="faze"><option>Nábor</option><option>Příprava</option><option>V inzerci</option><option>Prohlídky</option><option>Rezervace</option><option>Prodáno</option></select></label><label>&nbsp;<button class="btn btn--p" type="submit">Přidat zakázku</button></label></form></details>
+    <div class="kanban" id="kanban"></div>
+  </section>
+  <section class="sekce hidden" id="s-zajemci">
+    <div class="hlava"><div><h1>Zájemci</h1><p>Kdo hledá co a v jaké fázi jednání je.</p></div></div>
+    <div class="karta" style="margin-bottom:16px"><h2 id="z-nadpis">Nový zájemce</h2><form id="z-form" class="odhad">
+      <label>Jméno<input name="jmeno" required></label><label>Telefon<input name="telefon"></label><label>E-mail<input name="email" type="email"></label>
+      <label>Hledá<input name="hleda" placeholder="byt 2+kk, Brno"></label><label>Rozpočet (Kč)<input name="rozpocet" type="number" min="0"></label>
+      <label>Nemovitost<select name="nem" id="z-nem"></select></label><label>Poznámka<input name="pozn"></label>
+      <label>&nbsp;<button class="btn btn--p" type="submit" id="z-tl">Přidat zájemce</button></label><label>&nbsp;<button class="btn hidden" type="button" id="z-zrus">Zrušit úpravu</button></label></form></div>
+    <input class="filtr" id="z-hledat" type="search" placeholder="Hledat zájemce" aria-label="Hledat zájemce"><div class="karta" style="overflow:auto"><table class="tab-karty"><thead><tr><th>Zájemce</th><th>Hledá</th><th>Nemovitost</th><th>Stav</th><th>Poznámka</th><th></th></tr></thead><tbody id="zajemci-tab"></tbody></table></div>
+  </section>
+  <section class="sekce hidden" id="s-ukoly">
+    <div class="hlava"><div><h1>Úkoly a připomínky</h1><p>Prohlídky, telefonáty, podklady. Co je po termínu, svítí červeně.</p></div></div>
+    <div class="karta" style="margin-bottom:16px"><form id="u-form" class="odhad"><label>Co<input name="text" required placeholder="Zavolat zpět panu Novákovi"></label>
+      <label>Kdy<input name="datum" id="u-datum" type="date" required></label><label>Nemovitost<select name="nem" id="u-nem"></select></label>
+      <label>&nbsp;<button class="btn btn--p" type="submit">Přidat úkol</button></label></form></div>
+    <div class="karta" id="ukoly-list"></div>
+  </section>
+  <section class="sekce hidden" id="s-odhad">
+    <div class="hlava"><div><h1>Odhad ceny</h1><p>Vložte odkaz na inzerát (Sreality, RealityMix, Bezrealitky), nebo vyplňte údaje ručně.</p></div></div>
+    <div class="karta" style="margin-bottom:16px"><div style="display:flex;gap:8px;flex-wrap:wrap"><input id="o-url" placeholder="https://www.sreality.cz/detail/…" style="flex:1 1 320px"><button class="btn btn--p" id="o-url-btn" type="button">Načíst z odkazu</button></div></div>
+    <div class="dva"><form class="karta" id="o-form"><h2>Údaje o nemovitosti</h2><div class="odhad">
+      <label>Typ<select id="o-typ"><option value="byt">byt</option><option value="dům">dům</option><option value="pozemek">pozemek</option><option value="chata">chata</option><option value="komerční">komerční</option></select></label><label>Nabídka<select id="o-tr"><option value="prodej">prodej</option><option value="pronájem">pronájem</option></select></label>
+      <label>Obec<input id="o-obec" list="o-obec-list" placeholder="Brno"><datalist id="o-obec-list"></datalist></label><label>Dispozice<input id="o-disp" placeholder="3+kk"></label>
+      <label>Plocha (m²)<input id="o-plocha" type="number" min="1" required></label><label>Nabízená cena (Kč, nepovinné)<input id="o-cena" type="number" min="0"></label></div>
+      <button class="btn btn--p" type="submit" style="margin-top:14px">Spočítat odhad</button></form>
+      <div id="o-vysledek"><div class="karta"><p style="margin:0;color:var(--muted)">Odhad vychází z mediánu ceny za m² v obci, okresu nebo kraji podle 33 tisíc českých inzerátů bytů a domů na prodej (září a říjen 2026). Jde o nabídkové ceny, odhad je orientační a nenahrazuje znalecký posudek.</p></div></div></div>
+  </section>
+  <section class="sekce hidden" id="s-emaily">
+    <div class="hlava"><div><h1>E-maily zájemcům</h1><p>Šablony se vyplní jménem zájemce a nemovitostí. Zprávu otevřete ve své poště a odešlete ze své adresy.</p></div></div>
+    <div class="dva"><div class="karta"><div class="odhad"><label>Šablona<select id="e-sablona"></select></label><label>Nemovitost<select id="e-nem"></select></label><label>Zájemce<select id="e-zajemce"></select></label></div></div>
+      <div class="karta"><label>Komu<input id="e-komu"></label><label style="margin-top:10px">Předmět<input id="e-predmet"></label><label style="margin-top:10px">Text<textarea id="e-telo" rows="12"></textarea></label>
+        <div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn--p" id="e-otevrit" type="button">Otevřít v poště</button><button class="btn" id="e-kopirovat" type="button">Zkopírovat text</button></div></div></div>
+  </section>
+  <section class="sekce hidden" id="s-texty">
+    <div class="hlava"><div><h1>Texty webu</h1><p>Upravte text a uložte, na webu je hned. Prázdné pole vrátí původní text. Nemovitosti se načítají z RE/MAX samy.</p></div></div>
+    <div id="texty-box"></div><div class="lepi"><button class="btn btn--p" type="button" id="texty-uloz">Uložit texty</button></div>
+  </section>
+  <section class="sekce hidden" id="s-nastaveni">
+    <div class="hlava"><div><h1>Nastavení</h1></div></div>
+    <div class="dva"><form class="karta" id="n-form"><h2>Provize</h2><label>Provize (% z ceny, pro odhad na přehledu)<input id="n-provize" type="number" min="0" max="15" step="0.5"></label>
+      <div style="display:flex;gap:8px;margin-top:14px"><button class="btn btn--p" type="submit">Uložit</button></div></form><form class="karta" id="h-form"><h2>Změna hesla</h2><label>Současné heslo<input name="stare" type="password" required autocomplete="current-password"></label><label style="margin-top:10px">Nové heslo (aspoň 10 znaků)<input name="nove" type="password" required minlength="10" autocomplete="new-password"></label><label style="margin-top:10px">Nové heslo znovu<input name="znovu" type="password" required minlength="10" autocomplete="new-password"></label><button class="btn btn--p" type="submit" style="margin-top:14px">Změnit heslo</button></form><div class="karta"><h2>Zálohy</h2><p class="prazdno" style="margin-bottom:10px">Data se zálohují průběžně. Zálohu můžete kdykoli obnovit.</p><div id="zalohy"></div></div><div class="karta"><h2>Export</h2><p class="prazdno" style="margin-bottom:12px">Stáhněte si svá data do počítače.</p><div class="radek"><button class="btn" type="button" id="x-csv">Zájemci do Excelu (CSV)</button><button class="btn" type="button" id="x-json">Celá záloha (JSON)</button></div></div></div>
+  </section>
+</main>
+</div>
+<div id="zatemneni" class="zatemneni hidden"></div>
+<div id="panel" class="panel hidden"></div>
+<div id="toast" class="toast" role="status"></div>
+<script>
+(function(){
+var D=JSON.parse(document.getElementById('mk-data').textContent);
+var API=D.api, TK='mkcrm:token:'+D.slug, FAZE=['Nábor','Příprava','V inzerci','Prohlídky','Rezervace','Prodáno'];
+var S=null, VERZE=0, POPT=[], token=null, casovac=null, bezi=false, zmeny=0;
+try{token=sessionStorage.getItem(TK)||localStorage.getItem(TK)}catch(e){}
+function prazdny(){return {faze:{},pozn:{},zajemci:[],ukoly:[],vlastni:[],nast:{provize:3}}}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function Kc(n){return n?Math.round(n).toLocaleString('cs-CZ')+' Kč':'cena na vyžádání'}
+function N(){return D.nemovitosti.concat(S?S.vlastni:[])}
+function nem(id){return N().find(function(n){return String(n.id)===String(id)})}
+function toast(t){var e=document.getElementById('toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(function(){e.classList.remove('on')},2600)}
+function $(s,r){return (r||document).querySelector(s)}
+function $$(s,r){return [].slice.call((r||document).querySelectorAll(s))}
+function den(o){var x=new Date();x.setDate(x.getDate()+(o||0));return x.getFullYear()+'-'+('0'+(x.getMonth()+1)).slice(-2)+'-'+('0'+x.getDate()).slice(-2)}
+function datum(s){var m=/^(\d{4})-(\d\d)-(\d\d)/.exec(s||'');return m?(+m[3])+'. '+(+m[2])+'. '+m[1]:esc(s)}
+function cas(s){var d=new Date(s);return isNaN(d)?'':d.toLocaleString('cs-CZ',{day:'numeric',month:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'})}
+function novyId(p){return p+Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+document.documentElement.style.setProperty('--a',D.accent);
+addEventListener('error',function(e){var t=e.target;if(t&&t.tagName==='IMG'){t.classList.add('is-broken');if(t.parentNode)t.parentNode.classList.add('bez-fotky')}},true);
+
+/* fáze: ruční volba platí, dokud se stav na RE/MAX nezmění (rezervace a prodej se tak propíšou samy) */
+function fz(n){var f=S.faze[n.id];return f&&(n.vlastni||f.p===n.faze)?f.f:(n.faze||'V inzerci')}
+function dejFazi(id,f){var n=nem(id);if(!n||FAZE.indexOf(f)<0)return;if(n.vlastni)n.faze=f;else S.faze[id]={f:f,p:n.faze};uloz()}
+
+/* ---------- server ---------- */
+function api(cesta,telo,opt){opt=opt||{};var h={'Content-Type':'application/json'};if(token)h.Authorization='Bearer '+token;
+  return fetch(API+cesta,{method:telo?'POST':'GET',headers:h,body:telo?JSON.stringify(telo):undefined,keepalive:!!opt.keepalive,cache:'no-store'}).then(function(r){
+    return r.json().catch(function(){return{}}).then(function(j){if(r.ok)return j;var e=new Error(j.chyba||'Server neodpověděl.');e.status=r.status;throw e})})}
+function stav(t,ch){$$('.stavul').forEach(function(e){e.textContent=t;e.classList.toggle('chyba',!!ch)})}
+function uloz(){zmeny++;stav('Ukládám…');clearTimeout(casovac);casovac=setTimeout(posli,500)}
+function posli(opt){clearTimeout(casovac);if(bezi||!zmeny)return Promise.resolve();bezi=true;var z=zmeny;
+  return api('/crm/'+D.slug,Object.assign({data:S,zaklad:VERZE},opt&&opt.zaloha?{zaloha:true}:{}),opt).then(function(j){VERZE=j.verze;bezi=false;zmeny-=z;if(zmeny)posli();else stav('Vše uloženo')})
+  .catch(function(e){bezi=false;
+    if(e.status===401){odhlas('Přihlášení vypršelo. Přihlaste se prosím znovu.');return}
+    if(e.status===409){zmeny=0;toast('Data mezitím změnilo jiné zařízení, načetl jsem aktuální. Poslední změnu prosím zopakujte.');return nactiVse().then(function(){jdi(sekceTed())})}
+    stav('Neuloženo: '+e.message+' Zkouším znovu…',true);casovac=setTimeout(posli,5000)})}
+addEventListener('pagehide',function(){if(zmeny&&!bezi)posli({keepalive:JSON.stringify(S).length<60000})});
+addEventListener('beforeunload',function(e){if(zmeny){e.preventDefault();e.returnValue=''}});
+document.addEventListener('visibilitychange',function(){if(!document.hidden&&token&&S&&!zmeny&&!bezi&&$('#panel').classList.contains('hidden')&&!psani())nactiVse().then(function(){if(!psani())jdi(sekceTed())}).catch(function(){})});
+function psani(){var a=document.activeElement;return a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName)}
+function nactiVse(){return api('/crm/'+D.slug).then(function(j){S=Object.assign(prazdny(),j.data||{});VERZE=j.verze;POPT=j.poptavky;stav('Vše uloženo')})}
+
+/* ---------- přihlášení ---------- */
+function ukazApp(){nvZarizeni();$('#login').classList.add('hidden');$('#app').classList.remove('hidden');jdi(location.hash.replace('#','')||'prehled')}
+function chybaLogin(t){var e=$('#login-chyba');e.textContent=t;e.classList.toggle('hidden',!t)}
+function odhlas(t){token=null;S=null;zmeny=0;try{sessionStorage.removeItem(TK);localStorage.removeItem(TK)}catch(e){}
+  zavri();$('#app').classList.add('hidden');$('#login').classList.remove('hidden');$('#heslo').value='';chybaLogin(t||'')}
+function zapis(t,trvale){token=t;try{(trvale?localStorage:sessionStorage).setItem(TK,t);(trvale?sessionStorage:localStorage).removeItem(TK)}catch(e){}}
+$('#login form').addEventListener('submit',function(e){e.preventDefault();chybaLogin('');var b=$('#login button'),tr=$('#zapamatovat').checked;b.disabled=true;
+  api('/login/'+D.slug,{heslo:$('#heslo').value.trim(),zapamatovat:tr}).then(function(j){zapis(j.token,tr);return nactiVse()}).then(ukazApp)
+  .catch(function(x){chybaLogin(x instanceof TypeError?'Nepodařilo se spojit se serverem. Zkontrolujte připojení.':x.message)}).then(function(){b.disabled=false})});
+$$('.odhlasit').forEach(function(b){b.addEventListener('click',function(){Promise.resolve(posli()).then(function(){if(zmeny){toast('Změny ještě nejsou uložené.');return}odhlas()})})});
+
+/* ---------- navigace ---------- */
+var SEKCE={prehled:prehled,navstevnost:navstevnost,poptavky:poptavky,pipeline:pipeline,zajemci:zajemci,ukoly:ukoly,odhad:odhadInit,emaily:emaily,texty:texty,nastaveni:nastaveni};
+function sekceTed(){var s=location.hash.replace('#','');return SEKCE[s]?s:'prehled'}
+function jdi(s){if(!S)return;if(!SEKCE[s]||(s==='navstevnost'&&!D.navstevnost))s='prehled';$$('.sekce').forEach(function(x){x.classList.toggle('hidden',x.id!=='s-'+s)});
+  $$('.side a.nav').forEach(function(a){a.classList.toggle('on',a.getAttribute('href')==='#'+s)});if(location.hash!=='#'+s)history.replaceState(null,'','#'+s);odznak();SEKCE[s]()}
+$$('.side a.nav').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();jdi(a.getAttribute('href').slice(1));scrollTo(0,0)})});
+function odznak(){var n=POPT.filter(function(p){return p.stav==='nova'}).length,a=$('.side a[href="#poptavky"]'),o=$('.odznak',a);
+  if(!n){if(o)o.remove();return}if(!o){o=document.createElement('span');o.className='odznak';a.appendChild(o)}o.textContent=n}
+
+/* ---------- přehled ---------- */
+function prehled(){var hodnota=0,akt=0;N().forEach(function(n){if(['Rezervace','Prodáno'].indexOf(fz(n))<0){akt++;if(n.cena&&n.tr==='prodej')hodnota+=+n.cena}});
+  var dnes=den(),tyden=den(7),uk=S.ukoly.filter(function(u){return !u.hotovo&&u.datum<=tyden}),nove=POPT.filter(function(p){return p.stav==='nova'}).length;
+  $('#kpi').innerHTML='<div><b>'+akt+'</b><span>aktivních nemovitostí</span></div><div><b>'+(hodnota?Kc(hodnota):'0 Kč')+'</b><span>hodnota aktivní nabídky</span></div>'+
+    '<div><b>'+(hodnota?Kc(hodnota*S.nast.provize/100):'0 Kč')+'</b><span>odhad provize ('+esc(S.nast.provize)+' %)</span></div>'+
+    '<div><b>'+nove+'</b><span>nových poptávek z webu</span></div><div><b>'+uk.length+'</b><span>úkolů do 7 dnů</span></div>';
+  $('#prehled-faze').innerHTML=FAZE.map(function(f){return '<tr><td>'+f+'</td><td><b>'+N().filter(function(n){return fz(n)===f}).length+'</b></td></tr>'}).join('');
+  $('#prehled-ukoly').innerHTML=uk.length?uk.sort(function(a,b){return a.datum<b.datum?-1:1}).map(function(u){var n=nem(u.nem);
+    return '<div class="ukol'+(u.datum<dnes?' pozde':'')+'"><div><b>'+esc(u.text)+'</b><small>'+datum(u.datum)+(n?' · '+esc(n.titul):'')+'</small></div></div>'}).join(''):'<p class="prazdno">Žádné úkoly na nejbližších 7 dní.</p>';
+  nvPrehled()}
+
+/* ---------- poptávky z webu ---------- */
+function poptavky(){var l=$('#popt-list');l.innerHTML=POPT.map(function(p){var hot=p.stav!=='nova';
+  return '<div class="popt'+(hot?' hot':'')+'"><div class="radek"><b>'+esc(p.jmeno)+'</b><span class="stitek">'+(hot?'vyřízená':'nová')+'</span><small class="prazdno">'+cas(p.cas)+'</small></div>'+
+  '<div class="radek">'+(p.telefon?'<a href="tel:'+esc(p.telefon.replace(/[^+\d]/g,''))+'">'+esc(p.telefon)+'</a>':'')+(p.email?'<a href="mailto:'+esc(p.email)+'">'+esc(p.email)+'</a>':'')+'</div>'+
+  (p.zprava?'<p>'+esc(p.zprava)+'</p>':'')+'<div class="radek"><button class="btn btn--s btn--p" data-prevest="'+p.id+'">Přidat mezi zájemce</button><button class="btn btn--s" data-stav="'+p.id+'">'+(hot?'Vrátit mezi nové':'Označit jako vyřízenou')+'</button><button class="btn btn--s" data-pryc="'+p.id+'">Smazat</button></div></div>'}).join('')||'<p class="prazdno">Zatím žádná poptávka. Zprávy z kontaktního formuláře na webu se tu objeví samy.</p>';
+  function P(id){return POPT.find(function(x){return x.id===+id})}
+  function zmen(id,st){return api('/poptavky/'+D.slug,{id:+id,stav:st}).then(function(){P(id).stav=st;odznak();poptavky()}).catch(function(e){toast(e.message)})}
+  $$('[data-stav]',l).forEach(function(b){b.addEventListener('click',function(){zmen(b.dataset.stav,P(b.dataset.stav).stav==='nova'?'vyrizena':'nova')})});
+  $$('[data-pryc]',l).forEach(function(b){b.addEventListener('click',function(){potvrd(b,function(){api('/poptavky/'+D.slug,{id:+b.dataset.pryc,smaz:true}).then(function(){POPT=POPT.filter(function(x){return x.id!==+b.dataset.pryc});odznak();poptavky();toast('Poptávka smazána')}).catch(function(e){toast(e.message)})})})});
+  $$('[data-prevest]',l).forEach(function(b){b.addEventListener('click',function(){var p=P(b.dataset.prevest);
+    if(S.zajemci.some(function(z){return z.popt===p.id})){toast('Tento zájemce už v CRM je.');return}
+    S.zajemci.unshift({id:novyId('z'),popt:p.id,jmeno:p.jmeno,telefon:p.telefon||'',email:p.email||'',hleda:'',rozpocet:0,nem:'',stav:'Nový',pozn:(p.zprava||'').slice(0,1000)});uloz();zmen(p.id,'vyrizena');toast('Přidáno mezi zájemce')})})}
+/* smazání na dvě kliknutí, bez vyskakovacích oken */
+function potvrd(b,f){if(b.dataset.jiste){f();return}var t=b.textContent;b.dataset.jiste=1;b.textContent='Opravdu?';setTimeout(function(){delete b.dataset.jiste;b.textContent=t},3000)}
+
+/* ---------- pipeline ---------- */
+var otevreno=null;
+function pipeline(){var k=$('#kanban');k.innerHTML=FAZE.map(function(f){var karty=N().filter(function(n){return fz(n)===f});
+  return '<div class="sloupec" data-faze="'+f+'"><div class="sloupec__h">'+f+'<span>'+karty.length+'</span></div>'+karty.map(function(n){
+    return '<div class="kk" draggable="true" tabindex="0" role="button" data-id="'+esc(n.id)+'">'+(n.foto?'<img src="'+esc(n.foto)+'" alt="" loading="lazy">':'<span class="bez-fotky" style="width:56px;height:44px;border-radius:6px"></span>')+'<div><b>'+esc(n.titul)+'</b><span>'+esc(n.obec)+(n.vlastni?' · vlastní':'')+'</span><br><em>'+Kc(n.cena)+'</em></div></div>'}).join('')+'</div>'}).join('');
+  $$('.kk',k).forEach(function(c){c.addEventListener('dragstart',function(e){e.dataTransfer.setData('text',c.dataset.id);c.classList.add('dragging')});
+    c.addEventListener('dragend',function(){c.classList.remove('dragging')});c.addEventListener('click',function(){otevri(c.dataset.id)});c.addEventListener('keydown',function(e){if(e.key==='Enter')otevri(c.dataset.id)})});
+  $$('.sloupec',k).forEach(function(s){s.addEventListener('dragover',function(e){e.preventDefault();s.classList.add('over')});s.addEventListener('dragleave',function(){s.classList.remove('over')});
+    s.addEventListener('drop',function(e){e.preventDefault();s.classList.remove('over');dejFazi(e.dataTransfer.getData('text'),s.dataset.faze);pipeline();toast('Přesunuto do „'+s.dataset.faze+'“')})})}
+$('#v-form').addEventListener('submit',function(e){e.preventDefault();var f=e.target;
+  S.vlastni.unshift({id:novyId('v'),vlastni:true,titul:f.titul.value.trim(),typ:f.typ.value,tr:f.tr.value,cena:+f.cena.value||0,plocha:+f.plocha.value||0,obec:f.obec.value.trim(),majitel:f.majitel.value.trim(),faze:f.faze.value,vlozeno:den()});
+  uloz();f.reset();$('#v-box').open=false;pipeline();toast('Zakázka přidána')});
+function otevri(id){var n=nem(id);if(!n)return;otevreno=id;var p=$('#panel');p.classList.remove('hidden');$('#zatemneni').classList.remove('hidden');
+  var z=S.zajemci.filter(function(x){return String(x.nem)===String(id)});
+  p.innerHTML='<button class="zavrit" aria-label="Zavřít">×</button>'+(n.foto_velka||n.foto?'<img class="foto" src="'+esc(n.foto_velka||n.foto)+'" alt="">':'')+'<h2>'+esc(n.titul)+'</h2>'+
+    '<div><span class="stitek">'+esc(n.tr)+' · '+esc(n.typ)+'</span> &nbsp; <b>'+Kc(n.cena)+'</b>'+(n.plocha?' · '+esc(n.plocha)+' m²':'')+(n.cena&&n.plocha?' · '+Kc(n.cena/n.plocha)+'/m²':'')+'</div>'+
+    '<div style="color:var(--muted)">'+esc([n.obec,n.okres,n.kraj].filter(Boolean).join(', '))+(n.majitel?'<br>Majitel: '+esc(n.majitel):'')+'</div>'+
+    (n.vlastni?'':'<div class="radek"><a class="btn btn--s" href="../'+esc(n.slug)+'/" target="_blank">Stránka na webu</a>'+(/^https:/.test(n.portal||'')?'<a class="btn btn--s" href="'+esc(n.portal)+'" target="_blank" rel="noopener">Inzerát na RE/MAX</a>':'')+'</div>')+
+    '<label>Fáze<select id="p-faze">'+FAZE.map(function(f){return '<option'+(fz(n)===f?' selected':'')+'>'+f+'</option>'}).join('')+'</select></label>'+
+    '<div class="karta"><h2>Zájemci ('+z.length+')</h2>'+(z.length?z.map(function(x){return '<div>'+esc(x.jmeno)+' · <span class="stitek">'+esc(x.stav)+'</span> · '+esc(x.telefon)+'</div>'}).join(''):'<p class="prazdno">Zatím žádný. Přidejte v sekci Zájemci.</p>')+'</div>'+
+    '<div class="karta"><h2>Poznámky</h2><div class="pozn" id="p-pozn"></div><form id="p-form" style="display:flex;gap:8px;margin-top:10px"><input id="p-nova" aria-label="Nová poznámka" placeholder="Např. prohlídka proběhla"><button class="btn btn--p">Přidat</button></form></div>'+
+    '<div class="karta"><h2>Rychlé akce</h2><div class="radek"><button class="btn btn--s" data-akce="prohlidka">+ Úkol: prohlídka zítra</button><button class="btn btn--s" data-akce="email">Napsat zájemcům</button>'+(n.tr==='prodej'&&['byt','dům','chata'].indexOf(n.typ)>-1?'<button class="btn btn--s" data-akce="odhad">Porovnat s cenami v okolí</button>':'')+(n.vlastni?'<button class="btn btn--s" data-akce="smaz">Smazat zakázku</button>':'')+'</div></div>';
+  vykresliPozn();$('.zavrit',p).addEventListener('click',zavri);$('#p-faze').addEventListener('change',function(){dejFazi(id,this.value);pipeline();toast('Fáze změněna')});
+  $('#p-form').addEventListener('submit',function(e){e.preventDefault();var t=$('#p-nova').value.trim();if(!t)return;(S.pozn[id]=S.pozn[id]||[]).unshift({t:new Date().toISOString(),txt:t});uloz();$('#p-nova').value='';vykresliPozn()});
+  $$('[data-akce]',p).forEach(function(b){b.addEventListener('click',function(){var a=b.dataset.akce;
+    if(a==='prohlidka'){S.ukoly.unshift({id:novyId('u'),text:'Prohlídka: '+n.titul,datum:den(1),nem:id,hotovo:false});uloz();toast('Úkol přidán')}
+    if(a==='email'){zavri();jdi('emaily');$('#e-nem').value=id;$('#e-sablona').value='nova';sestavEmail()}
+    if(a==='odhad'){zavri();jdi('odhad');$('#o-typ').value=n.typ;$('#o-tr').value=n.tr;$('#o-obec').value=n.obec||'';$('#o-plocha').value=n.plocha||'';$('#o-cena').value=n.cena||'';spocitej()}
+    if(a==='smaz')potvrd(b,function(){S.vlastni=S.vlastni.filter(function(x){return x.id!==id});delete S.pozn[id];uloz();zavri();pipeline();toast('Zakázka smazána')})})})}
+function vykresliPozn(){var l=S.pozn[otevreno]||[],b=$('#p-pozn');b.innerHTML=l.length?l.map(function(p,i){return '<div>'+esc(p.txt)+'<small>'+cas(p.t)+' · <a href="#" data-pz="'+i+'">smazat</a></small></div>'}).join(''):'<p class="prazdno">Zatím bez poznámek.</p>';
+  $$('[data-pz]',b).forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();potvrd(a,function(){l.splice(+a.dataset.pz,1);uloz();vykresliPozn()})})})}
+function zavri(){$('#panel').classList.add('hidden');$('#zatemneni').classList.add('hidden');otevreno=null}
+$('#zatemneni').addEventListener('click',zavri);addEventListener('keydown',function(e){if(e.key==='Escape')zavri()});
+
+/* ---------- zájemci ---------- */
+var STAVY=['Nový','Kontaktován','Prohlídka','Nabídka','Uzavřeno','Nezájem'],upravuji=null;
+function volbyNem(){return '<option value="">bez nemovitosti</option>'+N().map(function(n){return '<option value="'+esc(n.id)+'">'+esc(n.titul)+' · '+esc(n.obec)+'</option>'}).join('')}
+function zajemci(){var t=$('#zajemci-tab'),q=$('#z-hledat').value.trim().toLowerCase();
+  t.innerHTML=S.zajemci.filter(function(z){return !q||[z.jmeno,z.telefon,z.email,z.hleda,z.pozn].join(' ').toLowerCase().indexOf(q)>-1}).map(function(z){var n=nem(z.nem);
+  return '<tr><td><b>'+esc(z.jmeno)+'</b><br><small>'+esc(z.telefon)+(z.telefon&&z.email?' · ':'')+esc(z.email)+'</small></td><td>'+esc(z.hleda)+(z.rozpocet?'<br><small>rozpočet '+Kc(z.rozpocet)+'</small>':'')+'</td><td>'+(n?esc(n.titul):'-')+'</td>'+
+    '<td><select aria-label="Stav" data-z="'+esc(z.id)+'">'+STAVY.map(function(s){return '<option'+(s===z.stav?' selected':'')+'>'+s+'</option>'}).join('')+'</select></td><td>'+esc(z.pozn)+'</td><td><div class="radek"><button class="btn btn--s" data-uprav="'+esc(z.id)+'">Upravit</button><button class="btn btn--s" data-smaz="'+esc(z.id)+'">Smazat</button></div></td></tr>'}).join('')||'<tr><td colspan="6">'+(q?'Nic nenalezeno.':'Zatím žádný zájemce.')+'</td></tr>';
+  function Z(id){return S.zajemci.find(function(x){return x.id===id})}
+  $$('select[data-z]',t).forEach(function(s){s.addEventListener('change',function(){Z(s.dataset.z).stav=s.value;uloz();toast('Stav uložen')})});
+  $$('[data-smaz]',t).forEach(function(b){b.addEventListener('click',function(){potvrd(b,function(){S.zajemci=S.zajemci.filter(function(x){return x.id!==b.dataset.smaz});uloz();zajemci()})})});
+  $$('[data-uprav]',t).forEach(function(b){b.addEventListener('click',function(){var z=Z(b.dataset.uprav),f=$('#z-form');upravuji=z.id;['jmeno','telefon','email','hleda','nem','pozn'].forEach(function(k){f[k].value=z[k]||''});f.rozpocet.value=z.rozpocet||'';zRezim();f.scrollIntoView({block:'center'});f.jmeno.focus()})});
+  var v=$('#z-nem').value;$('#z-nem').innerHTML=volbyNem();$('#z-nem').value=v;zRezim()}
+function zRezim(){$('#z-nadpis').textContent=upravuji?'Upravit zájemce':'Nový zájemce';$('#z-tl').textContent=upravuji?'Uložit změny':'Přidat zájemce';$('#z-zrus').classList.toggle('hidden',!upravuji)}
+$('#z-zrus').addEventListener('click',function(){upravuji=null;$('#z-form').reset();zRezim()});$('#z-hledat').addEventListener('input',zajemci);
+$('#z-form').addEventListener('submit',function(e){e.preventDefault();var f=e.target,d={jmeno:f.jmeno.value.trim(),telefon:f.telefon.value.trim(),email:f.email.value.trim(),hleda:f.hleda.value.trim(),rozpocet:+f.rozpocet.value||0,nem:f.nem.value,pozn:f.pozn.value.trim()};
+  var z=upravuji&&S.zajemci.find(function(x){return x.id===upravuji});if(z)Object.assign(z,d);else S.zajemci.unshift(Object.assign({id:novyId('z'),stav:'Nový'},d));
+  upravuji=null;uloz();f.reset();zajemci();toast(z?'Zájemce upraven':'Zájemce přidán')});
+
+/* ---------- úkoly ---------- */
+function ukoly(){var dnes=den(),l=S.ukoly.slice().sort(function(a,b){return (a.hotovo-b.hotovo)||(a.datum<b.datum?-1:1)});
+  $('#ukoly-list').innerHTML=l.map(function(u){var n=nem(u.nem);return '<div class="ukol'+(u.hotovo?' hotovo':'')+(!u.hotovo&&u.datum<dnes?' pozde':'')+'"><input type="checkbox" aria-label="Hotovo" data-u="'+esc(u.id)+'"'+(u.hotovo?' checked':'')+'><div style="flex:1"><b>'+esc(u.text)+'</b><small>'+datum(u.datum)+(n?' · '+esc(n.titul):'')+'</small></div><button class="btn btn--s" data-us="'+esc(u.id)+'">Smazat</button></div>'}).join('')||'<p class="prazdno">Žádné úkoly.</p>';
+  $$('input[data-u]').forEach(function(c){c.addEventListener('change',function(){S.ukoly.find(function(x){return x.id===c.dataset.u}).hotovo=c.checked;uloz();ukoly()})});
+  $$('[data-us]').forEach(function(b){b.addEventListener('click',function(){potvrd(b,function(){S.ukoly=S.ukoly.filter(function(x){return x.id!==b.dataset.us});uloz();ukoly()})})});
+  var v=$('#u-nem').value;$('#u-nem').innerHTML=volbyNem();$('#u-nem').value=v;if(!$('#u-datum').value)$('#u-datum').value=dnes}
+$('#u-form').addEventListener('submit',function(e){e.preventDefault();var f=e.target;S.ukoly.unshift({id:novyId('u'),text:f.text.value.trim(),datum:f.datum.value,nem:f.nem.value,hotovo:false});uloz();f.text.value='';ukoly();toast('Úkol přidán')});
+
+/* ---------- odhad ceny ---------- */
+var CENY=null;
+function slug(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}
+function odhadInit(){if(CENY)return;fetch('../assets/ceny.json').then(function(r){return r.json()}).then(function(j){CENY=j;var o=$('#o-obec-list');['typ','tr'].forEach(function(k){var f=k==='typ'?'t':'r';$$('#o-'+k+' option').forEach(function(x){if(!j.some(function(r){return r[f]===x.value}))x.remove()})});o.innerHTML=j.filter(function(r){return r.u==='obec'||r.u==='misto'}).map(function(r){return r.k}).filter(function(v,i,a){return a.indexOf(v)===i}).sort().map(function(k){return '<option value="'+esc(k)+'">'}).join('')}).catch(function(){$('#o-vysledek').innerHTML='<p>Cenová data se nepodařilo načíst (v náhledu ze souboru nejsou dostupná, na webu ano).</p>'})}
+function zUrl(){var u=$('#o-url').value.trim();if(!u)return;var m;
+  if((m=u.match(/sreality\.cz\/detail\/(prodej|pronajem)\/(byt|dum|pozemek|komercni|ostatni)\/([^\/]+)\/([^\/]+)\//))){
+    $('#o-tr').value=m[1]==='pronajem'?'pronájem':'prodej';$('#o-typ').value={byt:'byt',dum:'dům',pozemek:'pozemek',komercni:'komerční',ostatni:'ostatní'}[m[2]];
+    if(/^\d\+(kk|1)$/.test(m[3]))$('#o-disp').value=m[3];najdiObec(m[4])}
+  else if((m=u.match(/realitymix\.cz\/detail\/([^\/]+)\/([^\/]+)-\d+\.html/))){var s=m[2];
+    $('#o-tr').value=/pronajem/.test(s)?'pronájem':'prodej';$('#o-typ').value=/pozemk/.test(s)?'pozemek':/dom|vil|chat|chalup/.test(s)?'dům':/byt/.test(s)?'byt':/komer|kancel/.test(s)?'komerční':'byt';
+    var d=s.match(/(\d)-?(kk|1)(?:-|$)/);if(d)$('#o-disp').value=d[1]+'+'+d[2];var p=s.match(/(\d+)-m2/);if(p)$('#o-plocha').value=p[1];najdiObec(m[1])}
+  else if((m=u.match(/bezrealitky\.cz\/.*?(prodej|pronajem)-(bytu|domu|pozemku)[^\/]*?-(.+?)(?:\?|$)/))){$('#o-tr').value=m[1]==='pronajem'?'pronájem':'prodej';$('#o-typ').value={bytu:'byt',domu:'dům',pozemku:'pozemek'}[m[2]];najdiObec(m[3])}
+  else{toast('Adresu neumím přečíst, vyplňte pole ručně');return}
+  toast('Údaje z inzerátu předvyplněny, zkontrolujte plochu');spocitej()}
+function najdiObec(seo){if(!CENY)return;var s=slug(seo),best='';CENY.forEach(function(r){if(r.u!=='obec'&&r.u!=='misto')return;var k=slug(r.k);if(s.indexOf(k)===0&&k.length>best.length)best=r.k});if(best)$('#o-obec').value=best}
+function spocitej(){if(!CENY){$('#o-vysledek').innerHTML='<p>Načítám cenová data…</p>';return}
+  var typ=$('#o-typ').value,tr=$('#o-tr').value,ob=$('#o-obec').value.trim(),pl=+$('#o-plocha').value,cena=+$('#o-cena').value;
+  if(!pl){$('#o-vysledek').innerHTML='<p>Zadejte plochu v m².</p>';return}
+  var obR=CENY.find(function(r){return r.u==='obec'&&r.t===typ&&r.r===tr&&slug(r.k)===slug(ob)});
+  var okres=obR&&obR.ok,kraj=obR&&obR.kr;
+  if(!obR){var any=CENY.find(function(r){return (r.u==='obec'||r.u==='misto')&&slug(r.k)===slug(ob)&&r.ok});if(any){okres=any.ok;kraj=any.kr}}
+  var kand=[[obR,'obec '+ob],[CENY.find(function(r){return r.u==='okres'&&r.k===okres&&r.t===typ&&r.r===tr}),'okres '+okres],
+    [CENY.find(function(r){return r.u==='kraj'&&r.k===kraj&&r.t===typ&&r.r===tr}),kraj],[CENY.find(function(r){return r.u==='cr'&&r.t===typ&&r.r===tr}),'celá ČR']];
+  var pouz=null;for(var i=0;i<kand.length;i++){if(kand[i][0]&&kand[i][0].n>=8){pouz=kand[i];break}}
+  if(!pouz){for(i=0;i<kand.length;i++){if(kand[i][0]){pouz=kand[i];break}}}
+  if(!pouz){$('#o-vysledek').innerHTML='<p>Pro tuto kombinaci nemám data.</p>';return}
+  var r=pouz[0],med=r.med*pl,q1=r.q1*pl,q3=r.q3*pl,jm=(tr==='pronájem'?' / měsíc':'');
+  var moje=N().filter(function(n){return n.typ===typ&&n.tr===tr&&n.cena&&n.plocha});var mojeM2=moje.length?moje.reduce(function(a,n){return a+n.cena/n.plocha},0)/moje.length:0;
+  var poz=cena?Math.max(0,Math.min(100,(cena-q1)/(q3-q1)*100)):50;
+  $('#o-vysledek').innerHTML='<div class="karta vysledek"><span style="color:var(--muted)">Orientační tržní cena</span><b class="cena">'+Kc(med)+jm+'</b>'+
+    '<div class="rozpeti"><span>spodní čtvrtina '+Kc(q1)+'</span><span>horní čtvrtina '+Kc(q3)+'</span></div><div class="pruh"><i style="left:'+poz+'%"></i></div>'+
+    (cena?'<p><b>Zadaná cena '+Kc(cena)+'</b> je '+(cena<q1?'pod spodní čtvrtinou (rychlý prodej, možná podceněno)':cena>q3?'nad horní čtvrtinou (delší prodej, prostor na slevu)':'v obvyklém rozpětí')+'.</p>':'')+
+    '<p style="color:var(--muted);font-size:13px;margin:8px 0 0">Medián '+Kc(r.med)+'/m², '+r.n+' inzerátů, úroveň: '+esc(pouz[1])+'. Zdroj: nabídkové ceny z inzerce (Sreality, RealityMix), září a říjen 2026. Není znalecký posudek.</p>'+
+    (mojeM2?'<p style="font-size:13px;margin:6px 0 0">Vaše nabídka stejného typu: průměr '+Kc(mojeM2)+'/m² ('+moje.length+' nemovitostí).</p>':'')+'</div>'}
+$('#o-url-btn').addEventListener('click',zUrl);$('#o-url').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();zUrl()}});
+$('#o-form').addEventListener('submit',function(e){e.preventDefault();spocitej()});
+
+/* ---------- e-maily ---------- */
+var SABLONY={potvrzeni:{n:'Potvrzení prohlídky',p:'Potvrzení prohlídky: {titul}',t:'Dobrý den, {zajemce},\n\npotvrzuji naši prohlídku nemovitosti {titul} ({obec}) v termínu {datum}. Sejdeme se přímo před domem.\n\nKdyby se cokoli změnilo, dejte mi prosím vědět, nejrychleji přes WhatsApp.\n\nTěším se na Vás,\n{makler}\n{telefon}'},
+  podekovani:{n:'Poděkování po prohlídce',p:'Děkuji za prohlídku: {titul}',t:'Dobrý den, {zajemce},\n\nděkuji za dnešní prohlídku nemovitosti {titul}. Pokud máte jakékoli dotazy k technickému stavu, financování nebo termínu předání, rád je zodpovím.\n\nKdyby Vás nemovitost zaujala, dejte mi prosím vědět do konce týdne, zájemců je více.\n\nS pozdravem\n{makler}\n{telefon}'},
+  nova:{n:'Nová nabídka pro zájemce',p:'Nová nabídka: {titul}',t:'Dobrý den, {zajemce},\n\nmám pro Vás novou nabídku, která odpovídá tomu, co hledáte: {titul}, {obec}, {cena}.\n\nPodrobnosti a fotografie: {odkaz}\n\nPokud Vás zaujme, domluvíme prohlídku hned tento týden.\n\nS pozdravem\n{makler}\n{telefon}'},
+  followup:{n:'Připomenutí po týdnu',p:'Ještě k nemovitosti {titul}',t:'Dobrý den, {zajemce},\n\npřed týdnem jsme spolu mluvili o nemovitosti {titul}. Chci se jen zeptat, zda je pro Vás stále aktuální, případně jestli mám poslat jiné nabídky v lokalitě {obec}.\n\nS pozdravem\n{makler}\n{telefon}'},
+  doporuceni:{n:'Prosba o doporučení po prodeji',p:'Děkuji za spolupráci',t:'Dobrý den, {zajemce},\n\nděkuji za důvěru při prodeji nemovitosti {titul}. Pokud jste byli spokojeni, budu vděčný za krátké hodnocení nebo doporučení známým, kteří řeší prodej či koupi.\n\nS přáním všeho dobrého\n{makler}\n{telefon}'}};
+function emaily(){$('#e-sablona').innerHTML=Object.keys(SABLONY).map(function(k){return '<option value="'+k+'">'+SABLONY[k].n+'</option>'}).join('');
+  $('#e-nem').innerHTML=N().map(function(n){return '<option value="'+esc(n.id)+'">'+esc(n.titul)+' · '+esc(n.obec)+'</option>'}).join('');
+  $('#e-zajemce').innerHTML=S.zajemci.map(function(z){return '<option value="'+esc(z.id)+'">'+esc(z.jmeno)+'</option>'}).join('')||'<option value="">(přidejte zájemce)</option>';sestavEmail()}
+function sestavEmail(){var s=SABLONY[$('#e-sablona').value]||SABLONY.nova,n=nem($('#e-nem').value)||{},z=S.zajemci.find(function(x){return x.id===$('#e-zajemce').value})||{jmeno:'',email:''};
+  var d=new Date();d.setDate(d.getDate()+1);var odkaz=location.href.replace(/admin\/.*$/,'')+(n.slug||'')+'/';
+  var map={zajemce:z.jmeno.replace(/ \(ukázka\)/,'')||'',titul:n.titul||'',obec:n.obec||'',cena:Kc(n.cena),datum:d.toLocaleDateString('cs-CZ')+' v 17:00',makler:D.jmeno,telefon:D.telefon,odkaz:odkaz};
+  function f(t){return t.replace(/\{(\w+)\}/g,function(_,k){return map[k]||''})}
+  $('#e-predmet').value=f(s.p);$('#e-telo').value=f(s.t);$('#e-komu').value=z.email||''}
+$$('#e-sablona,#e-nem,#e-zajemce').forEach(function(el){el.addEventListener('change',sestavEmail)});
+$('#e-kopirovat').addEventListener('click',function(){navigator.clipboard&&navigator.clipboard.writeText($('#e-telo').value).then(function(){toast('Zkopírováno')})});
+$('#e-otevrit').addEventListener('click',function(){location.href='mailto:'+encodeURIComponent($('#e-komu').value)+'?subject='+encodeURIComponent($('#e-predmet').value)+'&body='+encodeURIComponent($('#e-telo').value)});
+
+
+/* ---------- texty webu ---------- */
+var TXT=null;
+function texty(){var b=$('#texty-box');if(b.dataset.ok)return;b.innerHTML='<p class="prazdno">Načítám…</p>';
+  api('/texty/'+D.slug).then(function(u){TXT=u;b.dataset.ok=1;b.innerHTML=D.texty.map(function(s){return '<div class="karta texty" style="margin-bottom:16px"><h2>'+esc(s.nazev)+' · <a href="'+esc(s.url)+'" target="_blank">zobrazit stránku</a></h2>'+s.pole.map(function(p){var t=u[p.k]||p.text;
+    return '<label>'+esc(p.typ)+'<textarea data-t="'+esc(p.k)+'" rows="'+Math.max(1,Math.min(8,Math.ceil(t.length/95)))+'">'+esc(t)+'</textarea></label>'}).join('')+'</div>'}).join('')}).catch(function(e){b.innerHTML='<p>'+esc(e.message)+'</p>'})}
+$('#texty-uloz').addEventListener('click',function(){if(!TXT)return;var puv={},o={};D.texty.forEach(function(s){s.pole.forEach(function(p){puv[p.k]=p.text})});
+  $$('#texty-box [data-t]').forEach(function(t){var v=t.value.trim();if(v&&v!==puv[t.dataset.t])o[t.dataset.t]=v;if(!v)t.value=puv[t.dataset.t]});
+  api('/texty/'+D.slug,o).then(function(){TXT=o;toast('Texty uloženy, na webu jsou hned')}).catch(function(e){if(e.status===401)odhlas(e.message);else toast(e.message)})});
+
+/* ---------- návštěvnost webu (doplněk navstevnost, Jelínek 26. 11. 2026) ---------- */
+/* bez cookies a osobních údajů: počítá Worker (POST /n), tady jen přehled; ?wh_test=1 v adrese adminu = testovací záznamy */
+var NVT=/[?&]wh_test=1/.test(location.search),NVC={},NVOBD='d30';
+if(D.navstevnost)$$('.jen-nav').forEach(function(e){e.classList.remove('hidden')});
+var NVZ={primy:'Přímo (zadaná adresa, záložka, QR kód)',google:'Google',seznam:'Seznam',facebook:'Facebook',instagram:'Instagram',email:'E-mail',bing:'Bing',duckduckgo:'DuckDuckGo',
+  chatgpt:'ChatGPT',perplexity:'Perplexity',linkedin:'LinkedIn',youtube:'YouTube',x:'X (Twitter)',remax:'RE/MAX (remax-czech.cz)',sreality:'Sreality.cz',whatsapp:'WhatsApp',interni:'Z Vašeho webu'};
+var NVD={mobil:'Mobil',pocitac:'Počítač',tablet:'Tablet'};
+function nvZdroj(z){return NVZ[z]||(/^web:/.test(z)?'Odkaz z webu '+z.slice(4):/^kampan:/.test(z)?'Kampaň: '+z.slice(7):z)}
+function nvZarizeni(){if(!D.navstevnost)return;try{if(localStorage.getItem('mk-nepocitat')===null)localStorage.setItem('mk-nepocitat','1')}catch(e){}}
+function nvMesic(o){var x=new Date();x.setDate(1);x.setMonth(x.getMonth()+o);return x.getFullYear()+'-'+('0'+(x.getMonth()+1)).slice(-2)+'-01'}
+function nvKonecMesice(o){var x=new Date();x.setDate(1);x.setMonth(x.getMonth()+o+1);x.setDate(0);return x.getFullYear()+'-'+('0'+(x.getMonth()+1)).slice(-2)+'-'+('0'+x.getDate()).slice(-2)}
+var NVO={dnes:['Dnes',function(){return [den(0),den(0)]}],d7:['7 dní',function(){return [den(-6),den(0)]}],d30:['30 dní',function(){return [den(-29),den(0)]}],
+  mesic:['Tento měsíc',function(){return [nvMesic(0),den(0)]}],minuly:['Minulý měsíc',function(){return [nvMesic(-1),nvKonecMesice(-1)]}],d90:['90 dní',function(){return [den(-89),den(0)]}]};
+function nvNacti(od,do_){var k=od+'|'+do_,c=NVC[k];if(c&&Date.now()-c.t<60000)return Promise.resolve(c.j);
+  return api('/navstevnost/'+D.slug+'?od='+od+'&do='+do_+(NVT?'&test=1':'')).then(function(j){NVC[k]={t:Date.now(),j:j};return j})}
+function nvSoucet(dny,od,do_){var s={n:0,u:0,z:0};dny.forEach(function(d){if((!od||d.den>=od)&&(!do_||d.den<=do_)){s.n+=+d.n||0;s.u+=+d.u||0;s.z+=+d.z||0}});return s}
+function nvCislo(n){return (+n||0).toLocaleString('cs-CZ')}
+function nvId(c){var m=/-(\d{4,})\/$/.exec(c);return m?m[1]:null}
+function nvNazev(c){return ((D.navstevnost||{}).stranky||{})[c]||c}
+function nvNem(c){var id=nvId(c);return id?N().find(function(n){return String(n.id)===id})||{titul:nvNazev(c),obec:'',foto:''}:null}
+function nvPrehled(){var b=$('#prehled-nav');if(!b||!D.navstevnost)return;
+  nvNacti(den(-29),den(0)).then(function(j){var d=nvSoucet(j.dny,j.dnes,j.dnes),t=nvSoucet(j.dny,den(-6)),m=nvSoucet(j.dny),z=j.zdroje.slice(0,3).map(function(x){return nvZdroj(x.zdroj)});
+    b.innerHTML='<h2>Návštěvnost webu</h2><div class="nv-mini"><div><b>'+nvCislo(d.u)+'</b><span>návštěvníků dnes</span></div><div><b>'+nvCislo(t.u)+'</b><span>za 7 dní</span></div><div><b>'+nvCislo(m.u)+'</b><span>za 30 dní</span></div></div>'+
+      (z.length?'<p class="prazdno" style="margin-bottom:12px">Nejčastěji přišli: '+esc(z.join(', '))+'</p>':'<p class="prazdno" style="margin-bottom:12px">Zatím žádná návštěva. Čísla se objeví hned po prvních návštěvách webu.</p>')+
+      '<a class="btn btn--s" href="#navstevnost" id="nv-vic">Podrobná návštěvnost</a>';
+    $('#nv-vic').addEventListener('click',function(e){e.preventDefault();jdi('navstevnost');scrollTo(0,0)})}).catch(function(e){b.innerHTML='<h2>Návštěvnost webu</h2><p class="prazdno">'+esc(e.message)+'</p>'})}
+function navstevnost(){var o=$('#nv-obdobi');o.innerHTML=Object.keys(NVO).map(function(k){return '<button type="button" class="btn btn--s'+(k===NVOBD?' btn--p':'')+'" data-obd="'+k+'">'+NVO[k][0]+'</button>'}).join('');
+  $$('[data-obd]',o).forEach(function(x){x.addEventListener('click',function(){NVOBD=x.dataset.obd;navstevnost()})});
+  var r=NVO[NVOBD][1](),b=$('#nv-obsah');if(!b.innerHTML)b.innerHTML='<p class="prazdno">Načítám…</p>';
+  try{$('#nv-ja').checked=localStorage.getItem('mk-nepocitat')==='1'}catch(e){}
+  nvNacti(r[0],r[1]).then(function(j){if(NVO[NVOBD][1]()[0]!==r[0])return;nvKresli(j,r[0],r[1])}).catch(function(e){if(e.status===401)odhlas(e.message);else b.innerHTML='<p>'+esc(e.message)+'</p>'})}
+function nvKresli(j,od,do_){var s=nvSoucet(j.dny),nem=[],str=[],zn=0;
+  j.stranky.forEach(function(p){var n=nvNem(p.cesta);if(n){nem.push([p,n]);zn+=+p.z}else str.push(p)});
+  var h=(NVT?'<div class="nv-test">Testovací režim: zobrazují se jen testovací návštěvy (?wh_test=1).</div>':'')+
+    '<div class="kpi"><div><b>'+nvCislo(s.n)+'</b><span>návštěv</span></div><div><b>'+nvCislo(s.u)+'</b><span>návštěvníků</span></div><div><b>'+nvCislo(s.z)+'</b><span>zobrazených stránek</span></div><div><b>'+nvCislo(zn)+'</b><span>zobrazení nemovitostí</span></div></div>';
+  if(od!==do_){var dny={},max=0,osa=[],sl=[];j.dny.forEach(function(d){dny[d.den]=+d.n;if(+d.n>max)max=+d.n});
+    var x=new Date(od+'T12:00:00'),k=new Date(do_+'T12:00:00'),vse=[];while(x<=k){vse.push(x.getFullYear()+'-'+('0'+(x.getMonth()+1)).slice(-2)+'-'+('0'+x.getDate()).slice(-2));x.setDate(x.getDate()+1)}
+    var krok=Math.max(1,Math.ceil(vse.length/(innerWidth<600?5:9)));
+    vse.forEach(function(dd,i){var n=dny[dd]||0;sl.push('<div title="'+datum(dd)+': '+n+' návštěv"><i class="'+(n?'':'nula')+'" style="height:'+(max?Math.max(2,Math.round(n/max*100)):2)+'%"></i></div>');
+      osa.push('<span>'+(i%krok===0?(+dd.slice(8))+'. '+(+dd.slice(5,7))+'.':'')+'</span>')});
+    h+='<div class="karta" style="margin-bottom:16px"><h2>Návštěvy po dnech</h2><div class="nv-graf" role="img" aria-label="Návštěvy po dnech">'+sl.join('')+'</div><div class="nv-osa">'+osa.join('')+'</div></div>'}
+  var zs=j.zdroje.reduce(function(a,x){return a+(+x.n)},0),us=j.zarizeni.reduce(function(a,x){return a+(+x.u)},0);
+  function pruh(n,c){var p=c?Math.round(n/c*100):0;return '<div class="nv-pruh"><i style="width:'+p+'%"></i></div>'}
+  h+='<div class="dva" style="margin-bottom:16px"><div class="karta"><h2>Odkud přišli</h2>'+(j.zdroje.length?'<table class="nv-tab"><thead><tr><th>Zdroj</th><th>Návštěvy</th><th>Podíl</th></tr></thead><tbody>'+j.zdroje.map(function(x){
+      return '<tr><td>'+esc(nvZdroj(x.zdroj))+pruh(x.n,zs)+'</td><td><b>'+nvCislo(x.n)+'</b></td><td>'+Math.round(x.n/zs*100)+' %</td></tr>'}).join('')+'</tbody></table>':'<p class="prazdno">Za toto období zatím nic.</p>')+'</div>'+
+    '<div class="karta"><h2>Zařízení</h2>'+(j.zarizeni.length?'<table class="nv-tab"><thead><tr><th>Zařízení</th><th>Návštěvníci</th><th>Podíl</th></tr></thead><tbody>'+j.zarizeni.map(function(x){
+      return '<tr><td>'+esc(NVD[x.zarizeni]||x.zarizeni)+pruh(x.u,us)+'</td><td><b>'+nvCislo(x.u)+'</b></td><td>'+Math.round(x.u/us*100)+' %</td></tr>'}).join('')+'</tbody></table>':'<p class="prazdno">Za toto období zatím nic.</p>')+'</div></div>';
+  h+='<div class="dva"><div class="karta" style="overflow:auto"><h2>Nejprohlíženější nemovitosti</h2>'+(nem.length?'<table class="nv-tab"><thead><tr><th>Nemovitost</th><th>Zobrazení</th><th>Lidí</th></tr></thead><tbody>'+nem.slice(0,30).map(function(a){var p=a[0],n=a[1];
+      return '<tr><td>'+(n.foto?'<img src="'+esc(n.foto)+'" alt="" loading="lazy">':'')+'<a href="..'+esc(p.cesta)+'" target="_blank">'+esc(n.titul)+'</a>'+(n.obec?'<br><small class="prazdno">'+esc(n.obec)+'</small>':'')+'</td><td><b>'+nvCislo(p.z)+'</b></td><td>'+nvCislo(p.u)+'</td></tr>'}).join('')+'</tbody></table>':'<p class="prazdno">Za toto období si zatím nikdo neotevřel detail nemovitosti.</p>')+'</div>'+
+    '<div class="karta" style="overflow:auto"><h2>Nejčtenější stránky</h2>'+(str.length?'<table class="nv-tab"><thead><tr><th>Stránka</th><th>Zobrazení</th><th>Lidí</th></tr></thead><tbody>'+str.slice(0,30).map(function(p){
+      return '<tr><td><a href="..'+esc(p.cesta)+'" target="_blank">'+esc(nvNazev(p.cesta))+'</a></td><td><b>'+nvCislo(p.z)+'</b></td><td>'+nvCislo(p.u)+'</td></tr>'}).join('')+'</tbody></table>':'<p class="prazdno">Za toto období zatím nic.</p>')+'</div></div>';
+  h+='<p class="nv-pozn">Návštěva = jeden příchod na web (po 30 minutách nečinnosti se počítá nová). Návštěvník se počítá jednou za den, za delší období se dny sčítají. Bez cookies a bez osobních údajů, roboti se nepočítají.</p>';
+  $('#nv-obsah').innerHTML=h}
+$('#nv-ja').addEventListener('change',function(){try{localStorage.setItem('mk-nepocitat',this.checked?'1':'0')}catch(e){}toast(this.checked?'Vaše návštěvy z tohoto zařízení se nepočítají':'Návštěvy z tohoto zařízení se budou počítat')});
+
+/* ---------- nastavení ---------- */
+function nastaveni(){$('#n-provize').value=S.nast.provize;var b=$('#zalohy');b.innerHTML='<p class="prazdno">Načítám…</p>';
+  api('/historie/'+D.slug).then(function(j){b.innerHTML=j.zalohy.slice(0,15).map(function(z){return '<div class="zpet"><span>'+cas(z.cas)+'</span><button class="btn btn--s" data-obnov="'+z.id+'">Obnovit</button></div>'}).join('')||'<p class="prazdno">První záloha vznikne po první změně.</p>';
+    $$('[data-obnov]',b).forEach(function(x){x.addEventListener('click',function(){potvrd(x,function(){zmeny++;posli({zaloha:true}).then(function(){return api('/historie/'+D.slug+'/'+x.dataset.obnov)}).then(function(r){S=Object.assign(prazdny(),r.data);uloz();nastaveni();toast('Záloha obnovena')}).catch(function(e){toast(e.message)})})})})}).catch(function(e){b.innerHTML='<p>'+esc(e.message)+'</p>'})}
+$('#n-form').addEventListener('submit',function(e){e.preventDefault();S.nast.provize=Math.max(0,+$('#n-provize').value||0);uloz();toast('Uloženo')});
+$('#h-form').addEventListener('submit',function(e){e.preventDefault();var f=e.target;if(f.nove.value!==f.znovu.value){toast('Nová hesla se neshodují.');return}
+  api('/heslo/'+D.slug,{stare:f.stare.value.trim(),nove:f.nove.value.trim()}).then(function(j){var tr=false;try{tr=!!localStorage.getItem(TK)}catch(x){}zapis(j.token,tr);f.reset();toast('Heslo změněno')}).catch(function(x){toast(x.message)})});
+function stahni(nazev,obsah,typ){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([obsah],{type:typ}));a.download=nazev;a.click();setTimeout(function(){URL.revokeObjectURL(a.href)},1000)}
+$('#x-csv').addEventListener('click',function(){function c(v){v=String(v==null?'':v);if(/^[=+\-@]/.test(v)&&!/^\+?[\d ]+$/.test(v))v="'"+v;return '"'+v.replace(/"/g,'""')+'"'}
+  stahni('zajemci-'+den()+'.csv','﻿'+[['Jméno','Telefon','E-mail','Hledá','Rozpočet','Nemovitost','Stav','Poznámka']].concat(S.zajemci.map(function(z){var n=nem(z.nem);return [z.jmeno,z.telefon,z.email,z.hleda,z.rozpocet||'',n?n.titul:'',z.stav,z.pozn]})).map(function(r){return r.map(c).join(';')}).join('\r\n'),'text/csv')});
+$('#x-json').addEventListener('click',function(){stahni('crm-zaloha-'+den()+'.json',JSON.stringify({crm:S,poptavky:POPT},null,1),'application/json')});
+
+if(token)nactiVse().then(ukazApp).catch(function(e){odhlas(e.status===401?'':'Nepodařilo se spojit se serverem, zkuste to znovu.')});
+})();
+</script>
+</body></html>
